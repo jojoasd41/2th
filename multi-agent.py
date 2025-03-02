@@ -66,7 +66,8 @@ def generate_CoC_prompt(data_point):
 def Contextual_understanding_prompt(data_point):
     if data_point:
         return f""" ### Instruction: You are a classifier for satirical works. Analyze the sentence according to the 
-        following steps .Here, [0] indicates "non-satirical", [1] indicates "satirical".
+        following steps .Here, [0] indicates this sentence is not a sarcastic expression, [1] indicates This sentence 
+        is a sarcastic expression. 
 
         ### Input Text:
         {data_point}
@@ -75,10 +76,10 @@ def Contextual_understanding_prompt(data_point):
         1.Responsible for extracting and integrating explicit and implicit contextual information of the 
         text, not only within the context of the text itself, but also actively obtaining contextual information from 
         external knowledge sources. 
-        2. Final Label: Provide the label '[0]' or '[1]', and the answer can only be given 
+        2. Final Label: Brief summary (no more than 10 words!),and Provide the label '[0]' or '[1]', and the answer can only be given 
         with '[0]' or '[1]'. 
 
-        
+
 
         ### Response:
         """
@@ -87,7 +88,8 @@ def Contextual_understanding_prompt(data_point):
 def Semantic_analysis_prompt(data_point):
     if data_point:
         return f""" ### Instruction: You are a classifier for satirical works. Analyze the sentence according to the 
-        following steps .Here, [0] indicates "non-satirical", [1] indicates "satirical".
+        following steps .Here, [0] indicates this sentence is not a sarcastic expression, [1] indicates This sentence 
+        is a sarcastic expression. 
 
         ### Input Text:
         {data_point}
@@ -96,9 +98,9 @@ def Semantic_analysis_prompt(data_point):
         1.Be responsible for conducting in-depth semantic understanding and sentiment analysis, conducting 
         more granular sentiment dimension analysis (such as sentiment intensity, sentiment type, sentiment 
         orientation), and paying attention to sentiment contrast and inconsistency. 
-        2.Final Label: Provide the label '[0]' or '[1]', and the answer can only be given with '[0]' or '[1]'.
+        2.Final Label: Brief summary (no more than 10 words!),Provide the label '[0]' or '[1]', and the answer can only be given with '[0]' or '[1]'.
 
-        
+
 
         ### Response:
         """
@@ -107,7 +109,8 @@ def Semantic_analysis_prompt(data_point):
 def Rhetorical_Analysis_prompt(data_point):
     if data_point:
         return f""" ### Instruction: You are a classifier for satirical works. Analyze the sentence according to the 
-        following steps .Here, [0] indicates "non-satirical", [1] indicates "satirical".
+        following steps .Here, [0] indicates this sentence is not a sarcastic expression, [1] indicates This sentence 
+        is a sarcastic expression. 
 
            ### Input:
            {data_point} 
@@ -115,10 +118,10 @@ def Rhetorical_Analysis_prompt(data_point):
            1.Focus on identifying the rhetorical devices and language techniques used in the text. Not only should one 
            recognize common rhetorical figures (irony, hyperbole, etc.), but also pay attention to the obscure and 
            indirect rhetorical devices.
-           2.Final Label: Provide the label '[0]' or '[1]', and the answer can only be given with '[0]' or '[1]'. 
+           2.Final Label: Brief summary (no more than 10 words!),Provide the label '[0]' or '[1]', and the answer can only be given with '[0]' or '[1]'. 
 
 
-            
+
 
 
 
@@ -144,7 +147,7 @@ def Reasoning_Decision_prompt(agent1_label, agent2_label, agent3_label):
     The final labels are determined through voting, Provide the label [0] or [1], and the answer can only be given with [0] or [1].
 
 
-   
+
 
     ### Response:
 
@@ -173,6 +176,7 @@ def Rhetorical_Analysis_Agent(input_text):  # 修辞分析Agent
 
 def Reasoning_Decision_Agent(agent1_label, agent2_label, agent3_label):  # 推理与决策代理
     votes = [agent1_label, agent2_label, agent3_label]
+    print(votes)
     vote0 = 0
     vote1 = 0
     for vote in votes:
@@ -184,8 +188,9 @@ def Reasoning_Decision_Agent(agent1_label, agent2_label, agent3_label):  # 推�
         label = 1
     else:
         label = 0
-    return label
 
+    print(vote0,vote1)
+    return label
 
 
 def eval_performance(y_true, y_pred, metric_path=None):
@@ -264,7 +269,9 @@ if __name__ == '__main__':
     chunk_size = int(np.ceil(len(df) / chunks))  # 计算每个分块的大小
     df_chunks = []  # 存储所有分块数据
 
-    for chunk_num in range(chunks):
+    for chunk_num in range(71,chunks):
+        all_texts = []
+        all_labels = []
         chunk_file_path = output_path.replace('.csv', f'_{chunk_num + 1}.csv')  # 构建当前分块文件路径
         c_path = output_path.replace('.csv', f'c_{chunk_num + 1}.csv')
         s_path = output_path.replace('.csv', f's_{chunk_num + 1}.csv')
@@ -298,6 +305,9 @@ if __name__ == '__main__':
                                               desc=f"Processing chunk {chunk_num + 1}/{chunks} for task")):
             input_text = row['Text']
             input_Label = row['Label']
+            all_texts.append(input_text)
+            all_labels.append(input_Label)
+
             content = Contextual_understanding_Agent(input_text)  # 语境分析代理
             print('语境分析代理正在处理中：')
             print("----------------")  # 打印分隔线
@@ -311,9 +321,10 @@ if __name__ == '__main__':
             #     label = 0
             # else:
             #     label = 1
-            if '[0]' in result :
+            if '[0]' in result:
                 pred = 0
-            else:pred = 1
+            else:
+                pred = 1
             Contextual_understanding_Agent_labels.append(pred)
             print("----------------")  # 打印分隔线
 
@@ -329,9 +340,10 @@ if __name__ == '__main__':
             #     label = 0
             # else:
             #     label = 1
-            if '[0]' in result :
+            if '[0]' in result:
                 pred = 0
-            else:pred = 1
+            else:
+                pred = 1
             Semantic_analysis_Agent_labels.append(pred)
             print("----------------")  # 打印分隔线
 
@@ -347,9 +359,10 @@ if __name__ == '__main__':
             #     label = 0
             # else:
             #     label = 1
-            if '[0]' in result :
+            if '[0]' in result:
                 pred = 0
-            else:pred = 1
+            else:
+                pred = 1
             Rhetorical_Analysis_Agent_labels.append(pred)
             print("----------------")  # 打印分隔线
             if Contextual_understanding_Agent_labels[-1] == Semantic_analysis_Agent_labels[-1] == \
@@ -375,8 +388,8 @@ if __name__ == '__main__':
                 # agent3_confidence = Rhetorical_Analysis_Agent_confidence[-1]
 
                 result = Reasoning_Decision_Agent(agent1_label,
-                                                   agent2_label,
-                                                   agent3_label)
+                                                  agent2_label,
+                                                  agent3_label)
 
                 # result = Invoke_model(model, content)
                 Reasoning_Decision_Agent_output_texts.append(result)  # 存储分析文本
@@ -385,7 +398,7 @@ if __name__ == '__main__':
                 #     label = 0
                 # else:
                 #     label = 1
-                Reasoning_Decision_Agent_labels.append(pred)
+                Reasoning_Decision_Agent_labels.append(result)
 
         # dfc = pd.DataFrame({
         #     "output": Contextual_understanding_Agent_output_texts,
@@ -406,8 +419,8 @@ if __name__ == '__main__':
         # dfr.to_csv(r_path, index=False)
 
         df_chunk = pd.DataFrame({
-            "Text": input_text,
-            "Label": input_Label,
+            "Text": all_texts,
+            "Label": all_labels,
             "output": Reasoning_Decision_Agent_output_texts,
             "pred": Reasoning_Decision_Agent_labels
         })
