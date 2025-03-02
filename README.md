@@ -8,3 +8,7 @@
     "Macro-F1": 0.6756982948007113,
     "Weighted-F1": 0.6893189664190814
 }
+没有用这个            if '0' in result or '[0]' in result:
+                pred = 0
+            else:
+                pred = 1
