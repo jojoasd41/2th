@@ -1,14 +1,10 @@
-改了下三个代理的模板，
 {
-    "Precision": 0.75,
-    "Recall": 0.75,
+    "Precision": 0.7678571428571429,
+    "Recall": 0.7166666666666667,
     "Accuracy": 0.7,
-    "F1": 0.75,
+    "F1": 0.7413793103448276,
     "Micro-F1": 0.7,
-    "Macro-F1": 0.6875,
-    "Weighted-F1": 0.7
+    "Macro-F1": 0.6921182266009853,
+    "Weighted-F1": 0.7019704433497538
 }
-没有用这个            if '0' in result or '[0]' in result:
-                pred = 0
-            else:
-                pred = 1
+
