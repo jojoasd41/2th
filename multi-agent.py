@@ -269,7 +269,7 @@ if __name__ == '__main__':
     chunk_size = int(np.ceil(len(df) / chunks))  # 计算每个分块的大小
     df_chunks = []  # 存储所有分块数据
 
-    for chunk_num in range(71,chunks):
+    for chunk_num in range(chunks):
         all_texts = []
         all_labels = []
         chunk_file_path = output_path.replace('.csv', f'_{chunk_num + 1}.csv')  # 构建当前分块文件路径
@@ -321,7 +321,7 @@ if __name__ == '__main__':
             #     label = 0
             # else:
             #     label = 1
-            if '[0]' in result:
+            if '0' in result or '[0]' in result:
                 pred = 0
             else:
                 pred = 1
@@ -340,7 +340,7 @@ if __name__ == '__main__':
             #     label = 0
             # else:
             #     label = 1
-            if '[0]' in result:
+            if '0' in result or '[0]' in result:
                 pred = 0
             else:
                 pred = 1
@@ -359,7 +359,7 @@ if __name__ == '__main__':
             #     label = 0
             # else:
             #     label = 1
-            if '[0]' in result:
+            if '0' in result or '[0]' in result:
                 pred = 0
             else:
                 pred = 1
